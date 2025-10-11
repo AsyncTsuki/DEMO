@@ -1,5 +1,6 @@
 from flask import Flask,request,render_template
-
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 app = Flask(__name__)
 
 class User:
@@ -7,6 +8,22 @@ class User:
         self.username=username
         self.email=email
 
+HOSTNAME ="127.0.0.1"
+PORT=3306
+USERNAME ='root'
+PASSWORD='plmokner123'
+DATABASE='fishery'
+app.config['SQLALCHEMY_DATABASE_URI']=f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8"
+db=SQLAlchemy(app)
+with app.app_context():
+    try:
+        # 尝试连接数据库并执行查询
+        with db.engine.connect() as conn:
+            rs = conn.execute(text("select 1"))
+            print("查询结果:", rs.fetchone())  # 应该输出 (1,)
+    except Exception as e:
+        # 捕获并打印所有可能的错误
+        print("数据库操作出错:", str(e))
 @app.route('/')
 def hello_world():
     user=User("async","xx@qq.com")
