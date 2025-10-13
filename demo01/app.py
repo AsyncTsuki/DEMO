@@ -1,6 +1,8 @@
 from flask import Flask,request,render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from flask_migrate import Migrate, migrate
+
 app = Flask(__name__)
 
 class User:
@@ -24,6 +26,7 @@ with app.app_context():
     except Exception as e:
         # 捕获并打印所有可能的错误
         print("数据库操作出错:", str(e))
+migrate=Migrate(app,db)
 @app.route('/')
 def hello_world():
     user=User("async","xx@qq.com")
