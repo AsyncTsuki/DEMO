@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+venv/
+env/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+
+# IDE generated files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+
+# Build outputs
+dist/
+build/
+*.egg
+
+# Flask session files (but keep the directory structure)
+flask_session/*
+!flask_session/.gitkeep
+
+# Temporary files
+*.tmp
+temp_account.js
+
+# Keep src directory structure but ignore IDE auto-generated files in src
+frontend/src/**/*
+!frontend/src/
+!frontend/src/App.vue
+!frontend/src/main.js
+!frontend/src/assets/
+!frontend/src/components/
+!frontend/src/layouts/
+!frontend/src/pages/
+!frontend/src/plugins/
+!frontend/src/router/
+!frontend/src/services/
+!frontend/src/stores/
+!frontend/src/styles/
