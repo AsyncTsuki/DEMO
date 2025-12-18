@@ -1,75 +1,105 @@
 <template>
-  <v-app>
+  <v-app class="app-background">
     <!-- 侧边导航栏 - 仅在非登录/注册页显示 -->
     <v-navigation-drawer
       v-if="showLayout"
       v-model="drawer"
       permanent
-      elevation="2"
+      elevation="0"
+      color="white"
+      class="main-drawer"
+      width="280"
     >
-      <div class="d-flex align-center pa-4">
-        <v-icon color="primary" size="32" class="mr-2">mdi-fish</v-icon>
-        <span class="text-h6 font-weight-bold">智能投喂系统</span>
+      <!-- Logo 区域 -->
+      <div class="d-flex align-center pa-6 mb-2">
+        <v-avatar color="primary" size="40" class="mr-3 elevation-2">
+          <v-icon color="white" size="24">mdi-fish</v-icon>
+        </v-avatar>
+        <div>
+          <div class="text-h6 font-weight-bold text-primary">智慧渔业平台</div>
+          <div class="text-caption text-grey">Smart Fishery System</div>
+        </div>
       </div>
 
-      <v-divider></v-divider>
+      <v-divider class="mx-4 mb-4"></v-divider>
 
-      <v-list nav class="mt-2">
+      <!-- 导航菜单 -->
+      <v-list nav class="px-4">
         <v-list-item
-          to="/"
-          prepend-icon="mdi-view-dashboard"
+          @click.stop="navigateTo('/')"
+          :active="route.path === '/'"
+          prepend-icon="mdi-view-dashboard-outline"
           title="系统概览"
-          active-class="text-primary"
+          class="mb-2 rounded-lg"
+          active-class="primary white--text elevation-2"
         ></v-list-item>
+        
         <v-list-item
-          to="/monitoring"
-          prepend-icon="mdi-water"
+          @click.stop="navigateTo('/monitoring')"
+          :active="route.path === '/monitoring'"
+          prepend-icon="mdi-water-outline"
           title="环境监测"
-          active-class="text-primary"
+          class="mb-2 rounded-lg"
+          active-class="primary white--text elevation-2"
         ></v-list-item>
+        
         <v-list-item
-          to="/feeding"
-          prepend-icon="mdi-bowl-mix"
+          @click.stop="navigateTo('/feeding')"
+          :active="route.path === '/feeding'"
+          prepend-icon="mdi-bowl-mix-outline"
           title="智能投喂"
-          active-class="text-primary"
+          class="mb-2 rounded-lg"
+          active-class="primary white--text elevation-2"
         ></v-list-item>
+        
         <v-list-item
-          to="/alerts"
-          prepend-icon="mdi-alert"
+          @click.stop="navigateTo('/alerts')"
+          :active="route.path === '/alerts'"
+          prepend-icon="mdi-bell-outline"
           title="系统告警"
-          active-class="text-primary"
+          class="mb-2 rounded-lg"
+          active-class="primary white--text elevation-2"
         ></v-list-item>
+        
         <v-list-item
-          to="/statistics"
-          prepend-icon="mdi-chart-line"
-          title="统计图表"
-          active-class="text-primary"
+          @click.stop="navigateTo('/statistics')"
+          :active="route.path === '/statistics'"
+          prepend-icon="mdi-chart-box-outline"
+          title="数据统计"
+          class="mb-2 rounded-lg"
+          active-class="primary white--text elevation-2"
         ></v-list-item>
       </v-list>
 
+      <!-- 底部用户区域 -->
       <template v-slot:append>
         <div class="pa-4">
-          <v-menu location="top">
+          <v-menu location="top start" origin="bottom start" transition="scale-transition">
             <template v-slot:activator="{ props }">
               <v-card
                 v-bind="props"
-                class="d-flex align-center pa-2 cursor-pointer"
-                flat
-                variant="tonal"
+                class="user-card d-flex align-center pa-3 cursor-pointer"
+                elevation="0"
+                border
               >
-                <v-avatar color="primary" size="32">
-                  <span class="text-white text-subtitle-2">{{ username.charAt(0).toUpperCase() }}</span>
+                <v-avatar color="primary lighten-4" size="40">
+                  <span class="text-primary font-weight-bold">{{ username.charAt(0).toUpperCase() }}</span>
                 </v-avatar>
                 <div class="ml-3 overflow-hidden">
-                  <div class="text-subtitle-2 text-truncate">{{ username }}</div>
+                  <div class="text-subtitle-2 font-weight-bold text-truncate">{{ username }}</div>
                   <div class="text-caption text-medium-emphasis">管理员</div>
                 </div>
                 <v-spacer></v-spacer>
-                <v-icon size="small">mdi-chevron-up</v-icon>
+                <v-icon size="small" color="grey">mdi-chevron-up</v-icon>
               </v-card>
             </template>
-            <v-list>
-              <v-list-item @click="logout" prepend-icon="mdi-logout" title="退出登录"></v-list-item>
+            <v-list class="rounded-lg elevation-4 mb-2" width="248">
+              <v-list-item 
+                @click="logout" 
+                prepend-icon="mdi-logout" 
+                title="退出登录"
+                color="error"
+              ></v-list-item>
             </v-list>
           </v-menu>
         </div>
@@ -77,15 +107,30 @@
     </v-navigation-drawer>
 
     <!-- 主内容区域 -->
-    <v-main>
+    <v-main class="bg-grey-lighten-4">
+      <!-- 顶部状态栏 (仅显示在非全屏页面) -->
+      <v-app-bar v-if="showLayout" flat color="transparent" class="px-4 mt-2">
+        <div class="text-h5 font-weight-bold text-grey-darken-3">{{ pageTitle }}</div>
+        <v-spacer></v-spacer>
+        <div class="text-body-2 text-grey-darken-1 mr-2">{{ currentDate }}</div>
+      </v-app-bar>
+
       <!-- 全局加载状态 -->
       <v-overlay v-model="globalLoading" class="align-center justify-center">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
+        <v-progress-circular indeterminate size="64" color="primary"></v-progress-circular>
       </v-overlay>
 
       <!-- 全局通知 -->
-      <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
+      <v-snackbar 
+        v-model="snackbar.show" 
+        :color="snackbar.color" 
+        timeout="3000"
+        location="top right"
+      >
         {{ snackbar.message }}
+        <template v-slot:actions>
+          <v-btn variant="text" @click="snackbar.show = false">关闭</v-btn>
+        </template>
       </v-snackbar>
 
       <!-- 路由视图 -->
@@ -97,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, provide, onMounted, onUnmounted, computed } from "vue";
+import { ref, provide, onMounted, onUnmounted, computed, watch } from "vue";
 import { environmentService } from "./services/environment";
 import { useRouter, useRoute } from 'vue-router'
 
@@ -109,6 +154,21 @@ const drawer = ref(true)
 const username = ref(localStorage.getItem('username') || 'Admin')
 const showLayout = computed(() => !['/login', '/register'].includes(route.path))
 
+// 页面标题映射
+const pageTitle = computed(() => {
+  const titleMap = {
+    '/': '系统概览',
+    '/monitoring': '环境监测',
+    '/feeding': '智能投喂',
+    '/alerts': '系统告警',
+    '/statistics': '数据统计'
+  }
+  return titleMap[route.path] || '智慧渔业平台'
+})
+
+// 当前日期
+const currentDate = ref(new Date().toLocaleDateString())
+
 // 全局状态管理
 const globalLoading = ref(false);
 const snackbar = ref({
@@ -116,6 +176,8 @@ const snackbar = ref({
   message: "",
   color: "success",
 });
+
+// ... (keep existing methods)
 
 // 全局方法
 const showLoading = (show) => {
@@ -153,7 +215,6 @@ const fetchEnvironmentData = async () => {
     }
   } catch (error) {
     console.error("获取环境数据失败:", error);
-    // 不显示错误消息以避免频繁提示
   }
 };
 
@@ -190,4 +251,35 @@ const logout = async () => {
     router.push('/login');
   }
 };
+
+// 导航方法
+const navigateTo = (path) => {
+  console.log('导航到:', path);
+  router.push(path).catch(err => {
+    console.error('路由跳转失败:', err);
+  });
+};
 </script>
+
+<style scoped>
+.app-background {
+  background-color: #f3f4f6;
+}
+
+.main-drawer {
+  border-right: none !important;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.02) !important;
+}
+
+.user-card {
+  transition: all 0.2s ease;
+}
+
+.user-card:hover {
+  background-color: rgba(0,0,0,0.03);
+}
+
+:deep(.v-list-item--active) {
+  box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.3);
+}
+</style>
