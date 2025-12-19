@@ -51,9 +51,16 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
+    include: [
+      'vue',
+      'vue-router',
+      'pinia',
+      'axios',
+      'apexcharts',
+      'vue3-apexcharts'
+    ],
     exclude: [
       'vuetify',
-      'vue-router',
       'unplugin-vue-router/runtime',
       'unplugin-vue-router/data-loaders',
       'unplugin-vue-router/data-loaders/basic',
@@ -80,13 +87,44 @@ export default defineConfig({
   server: {
     open: '/', // ← 启动时自动打开首页
     warmup: {
-      // 预热常用模块，避免首次加载404错误
+      // 预热所有页面和常用模块，避免首次加载404错误
       clientFiles: [
+        // 核心文件
         './src/App.vue',
+        './src/main.js',
+        './src/router/index.js',
+        
+        // 所有页面
         './src/pages/Landing.vue',
         './src/pages/index.vue',
-        './src/router/index.js',
-        './src/services/*.js'
+        './src/pages/monitoring.vue',
+        './src/pages/feeding.vue',
+        './src/pages/devices.vue',
+        './src/pages/alerts.vue',
+        './src/pages/logs.vue',
+        './src/pages/statistics.vue',
+        
+        // 布局和组件
+        './src/layouts/default.vue',
+        './src/components/**/*.vue',
+        
+        // 所有服务
+        './src/services/api.js',
+        './src/services/auth.js',
+        './src/services/devices.js',
+        './src/services/environment.js',
+        './src/services/feeding.js',
+        './src/services/alerts.js',
+        './src/services/logs.js',
+        './src/services/statistics.js',
+        
+        // 状态管理
+        './src/stores/app.js',
+        './src/stores/index.js',
+        
+        // 插件
+        './src/plugins/index.js',
+        './src/plugins/vuetify.js'
       ]
     }
   }
