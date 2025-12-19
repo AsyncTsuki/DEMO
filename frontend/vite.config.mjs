@@ -78,6 +78,16 @@ export default defineConfig({
     port: 3000,
   }, */
   server: {
-    open: '/login' // ← 启动时自动打开登录页（可选）
+    open: '/', // ← 启动时自动打开首页
+    warmup: {
+      // 预热常用模块，避免首次加载404错误
+      clientFiles: [
+        './src/App.vue',
+        './src/pages/Landing.vue',
+        './src/pages/index.vue',
+        './src/router/index.js',
+        './src/services/*.js'
+      ]
+    }
   }
 })

@@ -26,7 +26,7 @@
       <!-- 导航菜单 -->
       <v-list nav class="px-4">
         <v-list-item
-          @click.stop="navigateTo('/dashboard')"
+          to="/dashboard"
           :active="route.path === '/dashboard'"
           prepend-icon="mdi-view-dashboard-outline"
           title="系统概览"
@@ -35,7 +35,7 @@
         ></v-list-item>
         
         <v-list-item
-          @click.stop="navigateTo('/monitoring')"
+          to="/monitoring"
           :active="route.path === '/monitoring'"
           prepend-icon="mdi-water-outline"
           title="环境监测"
@@ -44,7 +44,7 @@
         ></v-list-item>
         
         <v-list-item
-          @click.stop="navigateTo('/feeding')"
+          to="/feeding"
           :active="route.path === '/feeding'"
           prepend-icon="mdi-bowl-mix-outline"
           title="智能投喂"
@@ -53,7 +53,7 @@
         ></v-list-item>
         
         <v-list-item
-          @click.stop="navigateTo('/alerts')"
+          to="/alerts"
           :active="route.path === '/alerts'"
           prepend-icon="mdi-bell-outline"
           title="系统告警"
@@ -62,7 +62,7 @@
         ></v-list-item>
         
         <v-list-item
-          @click.stop="navigateTo('/statistics')"
+          to="/statistics"
           :active="route.path === '/statistics'"
           prepend-icon="mdi-chart-box-outline"
           title="数据统计"
@@ -247,18 +247,10 @@ const logout = async () => {
     // 清除登录状态
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
-    // 跳转到登录页
-    router.push('/login');
+    // 跳转到首页
+    router.push('/')
   }
-};
-
-// 导航方法
-const navigateTo = (path) => {
-  console.log('导航到:', path);
-  router.push(path).catch(err => {
-    console.error('路由跳转失败:', err);
-  });
-};
+}
 </script>
 
 <style scoped>
