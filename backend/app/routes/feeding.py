@@ -332,3 +332,26 @@ def get_feeding_history():
         'success': True,
         'data': [history.to_dict() for history in histories]
     })
+
+
+@feeding_bp.route('/statistics', methods=['GET'])
+@login_required
+def get_feeding_statistics():
+    """获取投喂统计数据"""
+    # 统计投喂记录总数
+    total_feeding = FeedingHistory.query.count()
+    
+    # 统计投喂计划总数
+    total_plans = FeedingPlan.query.count()
+    
+    # 统计活跃的投喂计划数
+    active_plans = FeedingPlan.query.filter(FeedingPlan.status == 'active').count()
+    
+    return jsonify({
+        'success': True,
+        'data': {
+            'totalFeeding': total_feeding,
+            'totalPlans': total_plans,
+            'activePlans': active_plans
+        }
+    })

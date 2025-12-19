@@ -186,6 +186,20 @@ def get_statistics():
     })
 
 
+@environment_bp.route('/monitoring/count', methods=['GET'])
+@login_required
+def get_monitoring_count():
+    """获取环境监测总次数"""
+    count = EnvironmentData.query.count()
+    
+    return jsonify({
+        'success': True,
+        'data': {
+            'count': count
+        }
+    })
+
+
 @environment_bp.route('/thresholds', methods=['GET'])
 @login_required
 def get_thresholds():

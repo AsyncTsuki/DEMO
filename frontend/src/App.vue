@@ -26,8 +26,8 @@
       <!-- 导航菜单 -->
       <v-list nav class="px-4">
         <v-list-item
-          @click.stop="navigateTo('/')"
-          :active="route.path === '/'"
+          @click.stop="navigateTo('/dashboard')"
+          :active="route.path === '/dashboard'"
           prepend-icon="mdi-view-dashboard-outline"
           title="系统概览"
           class="mb-2 rounded-lg"
@@ -152,12 +152,12 @@ const route = useRoute()
 // 侧边栏控制
 const drawer = ref(true)
 const username = ref(localStorage.getItem('username') || 'Admin')
-const showLayout = computed(() => !['/login', '/register'].includes(route.path))
+const showLayout = computed(() => !['/login', '/register', '/'].includes(route.path))
 
 // 页面标题映射
 const pageTitle = computed(() => {
   const titleMap = {
-    '/': '系统概览',
+    '/dashboard': '系统概览',
     '/monitoring': '环境监测',
     '/feeding': '智能投喂',
     '/alerts': '系统告警',
