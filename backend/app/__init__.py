@@ -28,6 +28,7 @@ def create_app(config_name='default'):
     from app.routes.feeding import feeding_bp
     from app.routes.alerts import alerts_bp
     from app.routes.logs import logs_bp
+    from app.routes.statistics import statistics_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(environment_bp, url_prefix='/api/environment')
@@ -35,6 +36,7 @@ def create_app(config_name='default'):
     app.register_blueprint(feeding_bp, url_prefix='/api/feeding')
     app.register_blueprint(alerts_bp, url_prefix='/api/alerts')
     app.register_blueprint(logs_bp, url_prefix='/api/logs')
+    app.register_blueprint(statistics_bp, url_prefix='/api/statistics')
     
     # 注册错误处理
     register_error_handlers(app)

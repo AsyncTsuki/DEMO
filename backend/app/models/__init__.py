@@ -4,6 +4,7 @@ from app.models.device import Device, DeviceConfig, DeviceLinkageConfig
 from app.models.feeding import FeedingPlan, FeedingHistory
 from app.models.alert import Alert, AlertNotificationSetting
 from app.models.log import Log
+from app.models.pond import Pond
 
 __all__ = [
     'User',
@@ -16,5 +17,6 @@ __all__ = [
     'FeedingHistory',
     'Alert',
     'AlertNotificationSetting',
-    'Log'
+    'Log',
+    'Pond'
 ]

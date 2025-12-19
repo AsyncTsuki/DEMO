@@ -15,7 +15,7 @@ from app import create_app, db
 from app.models import (
     User, EnvironmentData, EnvironmentThreshold, 
     Device, DeviceConfig, DeviceLinkageConfig,
-    FeedingPlan, FeedingHistory, Alert, Log
+    FeedingPlan, FeedingHistory, Alert, Log, Pond
 )
 from datetime import datetime, timedelta, time
 import random
@@ -30,9 +30,9 @@ def init_database():
         db.create_all()
         print("数据库表创建完成！")
         
-        # 检查是否已有数据
-        if User.query.first():
-            print("数据库已包含数据，跳过初始化...")
+        # 检查是否已有数据（检查设备数据）
+        if Device.query.first():
+            print("数据库已包含设备数据，跳过初始化...")
             return
         
         print("开始插入初始数据...")
@@ -68,6 +68,36 @@ def init_database():
         ]
         for device in devices:
             db.session.add(device)
+        
+        db.session.commit()
+        
+        # 创建鱼塘数据
+        now = datetime.now()  # 定义now变量
+        fish_types = ['大黄鱼', '鲈鱼', '石斑鱼', '对虾', '海参']
+        locations = ['A区', 'B区', 'C区', 'D区']
+        ponds = []
+        
+        # 创建25个鱼塘（分布在过去12个月）
+        for i in range(25):
+            # 让鱼塘创建时间分布在过去12个月
+            months_ago = 11 - (i // 2)
+            created_date = now - timedelta(days=months_ago * 30 + random.randint(0, 20))
+            
+            pond = Pond(
+                name=f'{random.choice(locations)}{i + 1}号鱼塘',
+                location=f'{random.choice(locations)}养殖区{random.randint(1, 10)}号位',
+                area=round(random.uniform(800, 2000), 1),
+                depth=round(random.uniform(2.5, 5.0), 1),
+                capacity=random.randint(50000, 200000),
+                fish_type=random.choice(fish_types),
+                fish_count=random.randint(40000, 180000),
+                status='active' if random.random() > 0.1 else 'maintenance',
+                created_at=created_date,
+                updated_at=created_date,
+                notes=f'养殖周期 {random.randint(3, 8)} 个月'
+            )
+            ponds.append(pond)
+            db.session.add(pond)
         
         db.session.commit()
         
@@ -108,14 +138,19 @@ def init_database():
             db.session.add(env_data)
         
         # 创建投喂历史
-        for i in range(30):  # 30条历史记录
-            timestamp = now - timedelta(days=i // 3, hours=random.randint(6, 18))
+        fish_types = ['大黄鱼', '鲈鱼', '石斑鱼', '对虾', '海参']
+        for i in range(50):  # 50条历史记录
+            timestamp = now - timedelta(days=i // 2, hours=random.randint(6, 18))
             history = FeedingHistory(
                 device_id=random.choice(['feeder-001', 'feeder-002']),
                 amount=round(random.uniform(40, 60), 1),
                 time=timestamp,
+                timestamp=timestamp,  # 添加timestamp字段
                 type=random.choice(['auto', 'manual']),
-                operator='system' if random.random() > 0.3 else 'admin'
+                operator='system' if random.random() > 0.3 else 'admin',
+                fish_type=random.choice(fish_types),  # 添加鱼种
+                fish_count=random.randint(80000, 200000),  # 添加鱼群数量
+                average_weight=round(random.uniform(300, 800), 1)  # 添加平均体重
             )
             db.session.add(history)
         

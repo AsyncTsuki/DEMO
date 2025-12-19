@@ -39,8 +39,12 @@ class FeedingHistory(db.Model):
     device_id = db.Column(db.String(50), db.ForeignKey('devices.id', ondelete='CASCADE'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     time = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now, index=True)  # 用于统计
     type = db.Column(db.String(20), nullable=False)  # auto, manual
     operator = db.Column(db.String(50), nullable=False)
+    fish_type = db.Column(db.String(50))  # 鱼种
+    fish_count = db.Column(db.Integer)  # 鱼群数量
+    average_weight = db.Column(db.Float)  # 平均体重（克）
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     
     def to_dict(self):
@@ -50,8 +54,12 @@ class FeedingHistory(db.Model):
             'device_id': self.device_id,
             'amount': self.amount,
             'time': self.time.isoformat() if self.time else None,
+            'timestamp': self.timestamp.isoformat() if self.timestamp else None,
             'type': self.type,
-            'operator': self.operator
+            'operator': self.operator,
+            'fishType': self.fish_type,
+            'fishCount': self.fish_count,
+            'averageWeight': self.average_weight
         }
     
     def __repr__(self):
