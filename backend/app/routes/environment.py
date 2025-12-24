@@ -81,24 +81,25 @@ def generate_realtime_data():
 def get_realtime_data():
     """获取实时环境数据"""
     try:
-        data = generate_realtime_data()
+        # 直接返回数据库中最新的真实数据，不添加波动
+        latest = EnvironmentData.query.order_by(EnvironmentData.timestamp.desc()).first()
         
-        # 保存到数据库（可选，用于历史记录）
-        env_record = EnvironmentData(
-            temperature=data['temperature'],
-            dissolved_oxygen=data['dissolvedOxygen'],
-            ph=data['ph'],
-            water_flow=data['waterFlow']
-        )
-        db.session.add(env_record)
-        db.session.commit()
+        if latest:
+            data = {
+                'temperature': round(latest.temperature, 1),
+                'dissolvedOxygen': round(latest.dissolved_oxygen, 1),
+                'ph': round(latest.ph, 2),
+                'waterFlow': round(latest.water_flow, 2)
+            }
+        else:
+            # 如果没有数据，返回默认值
+            data = generate_realtime_data()
         
         return jsonify({
             'success': True,
             'data': data
         })
     except Exception as e:
-        db.session.rollback()
         return jsonify({
             'success': True,
             'data': generate_realtime_data()
