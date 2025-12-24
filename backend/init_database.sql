@@ -161,6 +161,7 @@ VALUES (18.0, 28.0, 5.0, 8.0, 7.0, 8.0);
 
 -- 插入示例设备
 INSERT INTO devices (id, name, type, status, location) VALUES
+('SENSOR_POND_001', '1号池塘环境传感器', 'sensor', 'offline', '1号池塘'),
 ('feeder-001', '智能投喂机1号', 'feeder', 'online', 'A区1号网箱'),
 ('feeder-002', '智能投喂机2号', 'feeder', 'online', 'A区2号网箱'),
 ('feeder-003', '智能投喂机3号', 'feeder', 'offline', 'B区1号网箱'),

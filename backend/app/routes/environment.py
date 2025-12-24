@@ -9,6 +9,41 @@ import random
 environment_bp = Blueprint('environment', __name__)
 
 
+@environment_bp.route('/data', methods=['POST'])
+def receive_environment_data():
+    """接收设备上报的环境数据（不需要登录）"""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                'success': False,
+                'message': '请求数据为空'
+            }), 400
+        
+        # 创建环境数据记录
+        env_record = EnvironmentData(
+            temperature=data.get('temperature', 0),
+            dissolved_oxygen=data.get('dissolved_oxygen', 0),
+            ph=data.get('ph', 0),
+            water_flow=data.get('water_flow', 0)
+        )
+        
+        db.session.add(env_record)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': '数据上报成功'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'数据上报失败: {str(e)}'
+        }), 500
+
+
 def generate_realtime_data():
     """生成模拟的实时环境数据"""
     # 获取最新的真实数据，如果没有则生成模拟数据

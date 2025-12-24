@@ -48,7 +48,6 @@ def get_device(device_id):
 
 
 @devices_bp.route('/<device_id>/status', methods=['PATCH'])
-@login_required
 def update_device_status(device_id):
     """更新设备状态"""
     device = Device.query.get(device_id)

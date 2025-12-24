@@ -1,0 +1,50 @@
+{
+  "deviceId": "SENSOR_POND_001",
+  "deviceName": "1号池塘环境传感器",
+  "deviceType": "sensor",
+  "location": "1号池塘",
+  "server": {
+    "host": "http://10.0.2.2:5000",
+    "apiPrefix": "/api",
+    "timeout": 5000,
+    "retryTimes": 3
+  },
+  "sensors": {
+    "temperature": {
+      "enabled": true,
+      "min": 18.0,
+      "max": 32.0,
+      "interval": 30000
+    },
+    "dissolvedOxygen": {
+      "enabled": true,
+      "min": 3.0,
+      "max": 12.0,
+      "interval": 30000
+    },
+    "ph": {
+      "enabled": true,
+      "min": 6.5,
+      "max": 8.5,
+      "interval": 30000
+    },
+    "waterFlow": {
+      "enabled": true,
+      "min": 0.5,
+      "max": 5.0,
+      "interval": 30000
+    }
+  },
+  "feeder": {
+    "enabled": true,
+    "capacity": 100.0,
+    "minAmount": 0.1,
+    "maxAmount": 10.0,
+    "speed": 0.5
+  },
+  "upload": {
+    "interval": 30000,
+    "batchSize": 10,
+    "retryInterval": 5000
+  }
+}
